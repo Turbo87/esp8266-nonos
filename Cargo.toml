@@ -1,0 +1,24 @@
+[package]
+name = "esp8266-nonos-sys"
+version = "0.0.0"
+edition = "2021"
+include = [
+    "/include/",
+    "/sdk/include/",
+    "/sdk/ld/",
+    "/sdk/lib/",
+    "/src/",
+    "/build.rs",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+bindgen = "0.59.2"
+
+[dependencies]
+cty = "0.2.2"
+
+[dev-dependencies]
+esp8266-hal = "0.5.0"
+panic-halt = "0.2.0"
