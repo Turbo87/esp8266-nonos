@@ -10,8 +10,10 @@ fn main() {
     let lib_path = sdk_path.join("lib");
     println!("cargo:rustc-link-search=native={}", lib_path.display());
 
+    // let linker_script_path = sdk_path.join("ld").join("eagle.app.v6.new.2048.ld");
     let linker_script_path = sdk_path.join("ld").join("eagle.app.v6.ld");
     // let linker_script_path = sdk_path.join("ld").join("eagle.rom.addr.v6.ld");
+    // let linker_script_path = crate_path.join("include").join("foo.x");
     println!("cargo:rustc-link-arg=-T{}", linker_script_path.display());
 
     // println!("cargo:rustc-link-lib=static=smartconfig");
@@ -38,19 +40,32 @@ fn main() {
     // the resulting bindings.
     let local_include_path = crate_path.join("include");
     let builder = bindgen::Builder::default()
+        // .clang_arg("-x c")
         .clang_arg(format!("-F{}", local_include_path.display()))
+        // .clang_arg(format!(
+        //     "-F{}",
+        //     "/Users/tbieniek/Code/xtensa-lx106-elf/xtensa-lx106-elf/sys-include/"
+        // ))
+        // .clang_arg("--sysroot=/Users/tbieniek/Code/xtensa-lx106-elf/")
         .clang_arg(format!("--target={}", env::var("HOST").unwrap()))
-        .clang_arg("--trace-includes") // TODO
+        // .clang_arg("--trace-includes") // TODO
         .use_core()
         .ctypes_prefix("cty")
         // The input header we would like to generate
         // bindings for.
         .header("sdk/include/user_interface.h")
-        // .header("sdk/include/osapi.h")
+        .header("sdk/include/osapi.h")
+        // .header("include/wrapper.h")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .layout_tests(false);
+
+    // eprintln!("HOST: {}", env::var("HOST").unwrap());
+    // eprintln!(
+    //     "please run: bindgen --output src/bindings.rs {}",
+    //     builder.command_line_flags().join(" ")
+    // );
 
     let bindings = builder
         // Finish the builder and generate the bindings.
